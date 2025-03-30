@@ -1,0 +1,168 @@
+{% extends 'base.html' %}
+
+{% block dashboard_layout %}
+<div class="dashboard">
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="sidebar-logo">
+            <img src="{{ url_for('static', filename='svg/logo.svg') }}" alt="UC Logo">
+        </div>
+        <div class="sidebar-nav">
+            <a href="{{ url_for('dashboard') }}">
+                <i class="fas fa-tachometer-alt"></i> DASHBOARD
+            </a>
+            <a href="{{ url_for('reservation') }}" class="active">
+                <i class="fas fa-calendar-alt"></i> RESERVATION
+            </a>
+            <a href="{{ url_for('rules') }}">
+                <i class="fas fa-list-ul"></i> RULES
+            </a>
+            <a href="{{ url_for('logout') }}">
+                <i class="fas fa-sign-out-alt"></i> LOGOUT
+            </a>
+        </div>
+    </div>
+    
+    <!-- Content Area -->
+    <div class="content-area">
+        <div class="header">
+            <div class="logo-container">
+                <div class="logo-text">
+                    <h1>University of Cebu - Main Campus</h1>
+                </div>
+            </div>
+            <div class="nav-links">
+                <a href="{{ url_for('dashboard') }}">HOME</a>
+                <a href="{{ url_for('rules') }}">ABOUT US</a>
+                <a href="{{ url_for('logout') }}">LOGOUT</a>
+            </div>
+        </div>
+        
+        <div class="main-content">
+            <div class="flash-messages">
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        {% for category, message in messages %}
+                            <div class="alert alert-{{ category }}">{{ message }}</div>
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <h3>Lab Reservation</h3>
+                </div>
+                <div class="card-body">
+                    <div class="calendar-container">
+                        <div class="calendar">
+                            <div class="calendar-header">
+                                <div class="calendar-nav">
+                                    <button class="prev-month"><i class="fas fa-chevron-left"></i></button>
+                                    <div class="calendar-month">{{ current_month }}</div>
+                                    <button class="next-month"><i class="fas fa-chevron-right"></i></button>
+                                </div>
+                            </div>
+                            
+                            <div class="calendar-grid">
+                                <div class="calendar-day-header">Sun</div>
+                                <div class="calendar-day-header">Mon</div>
+                                <div class="calendar-day-header">Tue</div>
+                                <div class="calendar-day-header">Wed</div>
+                                <div class="calendar-day-header">Thu</div>
+                                <div class="calendar-day-header">Fri</div>
+                                <div class="calendar-day-header">Sat</div>
+                                
+                                {% for day in range(1, 32) %}
+                                    <div class="calendar-day" data-date="2025-03-{{ '%02d' % day }}">{{ day }}</div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        
+                        <div class="reservation-form">
+                            <form action="{{ url_for('book_reservation') }}" method="POST">
+                                <input type="hidden" id="selected-date" name="date" value="">
+                                
+                                <div class="form-group">
+                                    <label for="purpose-select">Purpose:</label>
+                                    <select id="purpose-select" class="form-control" required>
+                                        <option value="">Select</option>
+                                        {% for purpose in purposes %}
+                                            <option value="{{ purpose }}">{{ purpose }}</option>
+                                        {% endfor %}
+                                    </select>
+                                    <input type="hidden" name="purpose" value="">
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="laboratory-select">Laboratory:</label>
+                                    <select id="laboratory-select" class="form-control" required>
+                                        <option value="">Select</option>
+                                        {% for lab in laboratories %}
+                                            <option value="{{ lab }}">{{ lab }}</option>
+                                        {% endfor %}
+                                    </select>
+                                    <input type="hidden" name="laboratory" value="">
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="time-slot-select">Time:</label>
+                                    <select id="time-slot-select" class="form-control" required>
+                                        <option value="">Select</option>
+                                        {% for time_slot in time_slots %}
+                                            <option value="{{ time_slot }}">{{ time_slot }}</option>
+                                        {% endfor %}
+                                    </select>
+                                    <input type="hidden" name="time_slot" value="">
+                                </div>
+                                
+                                <div class="reservation-details">
+                                    <div class="detail-item">Selected Date: <span id="selected-date-display">None</span></div>
+                                    <div class="detail-item">Selected Time: <span id="selected-time">None</span></div>
+                                    <div class="detail-item">Purpose: <span id="selected-purpose">None</span></div>
+                                    <div class="detail-item">Laboratory: <span id="selected-laboratory">None</span></div>
+                                </div>
+                                
+                                <button type="submit" class="btn btn-block" style="margin-top: 20px;">Book Reservation</button>
+                            </form>
+                        </div>
+                    </div>
+                    
+                    <!-- User's Reservations -->
+                    <div class="card" style="margin-top: 20px;">
+                        <div class="card-header">
+                            <h3>Your Reservations</h3>
+                        </div>
+                        <div class="card-body">
+                            {% if user_reservations %}
+                                <table style="width: 100%; border-collapse: collapse;">
+                                    <thead>
+                                        <tr>
+                                            <th style="padding: 10px; text-align: left; border-bottom: 1px solid #ddd;">Date</th>
+                                            <th style="padding: 10px; text-align: left; border-bottom: 1px solid #ddd;">Time</th>
+                                            <th style="padding: 10px; text-align: left; border-bottom: 1px solid #ddd;">Laboratory</th>
+                                            <th style="padding: 10px; text-align: left; border-bottom: 1px solid #ddd;">Purpose</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for reservation in user_reservations %}
+                                            <tr>
+                                                <td style="padding: 10px; border-bottom: 1px solid #eee;">{{ reservation['reservation_date'] }}</td>
+                                                <td style="padding: 10px; border-bottom: 1px solid #eee;">{{ reservation['time_slot'] }}</td>
+                                                <td style="padding: 10px; border-bottom: 1px solid #eee;">{{ reservation['laboratory'] }}</td>
+                                                <td style="padding: 10px; border-bottom: 1px solid #eee;">{{ reservation['purpose'] }}</td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            {% else %}
+                                <p>You don't have any reservations yet.</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

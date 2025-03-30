@@ -1,0 +1,134 @@
+{% extends 'base.html' %}
+
+{% block dashboard_layout %}
+<div class="dashboard">
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="sidebar-logo">
+            <img src="{{ url_for('static', filename='svg/logo.svg') }}" alt="UC Logo">
+        </div>
+        <div class="sidebar-nav">
+            <a href="{{ url_for('dashboard') }}">
+                <i class="fas fa-tachometer-alt"></i> DASHBOARD
+            </a>
+            <a href="{{ url_for('reservation') }}">
+                <i class="fas fa-calendar-alt"></i> RESERVATION
+            </a>
+            <a href="{{ url_for('rules') }}" class="active">
+                <i class="fas fa-list-ul"></i> RULES
+            </a>
+            <a href="{{ url_for('logout') }}">
+                <i class="fas fa-sign-out-alt"></i> LOGOUT
+            </a>
+        </div>
+    </div>
+    
+    <!-- Content Area -->
+    <div class="content-area">
+        <div class="header">
+            <div class="logo-container">
+                <div class="logo-text">
+                    <h1>University of Cebu - Main Campus</h1>
+                </div>
+            </div>
+            <div class="nav-links">
+                <a href="{{ url_for('dashboard') }}">HOME</a>
+                <a href="{{ url_for('rules') }}">ABOUT US</a>
+                <a href="{{ url_for('logout') }}">LOGOUT</a>
+            </div>
+        </div>
+        
+        <div class="main-content">
+            <div class="flash-messages">
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        {% for category, message in messages %}
+                            <div class="alert alert-{{ category }}">{{ message }}</div>
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
+            </div>
+            
+            <div class="rules-section">
+                <div class="rule-card">
+                    <h3><i class="fas fa-user-tie"></i> General Conduct</h3>
+                    <ul class="rule-list">
+                        <li class="rule-item">
+                            <i class="fas fa-check"></i>
+                            <span>Maintain silence and proper decorum at all times</span>
+                        </li>
+                        <li class="rule-item">
+                            <i class="fas fa-check"></i>
+                            <span>No food or drinks allowed in the lab</span>
+                        </li>
+                        <li class="rule-item">
+                            <i class="fas fa-check"></i>
+                            <span>Follow instructor's directions immediately</span>
+                        </li>
+                        <li class="rule-item">
+                            <i class="fas fa-check"></i>
+                            <span>Report any issues to staff promptly</span>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="rule-card">
+                    <h3><i class="fas fa-desktop"></i> Computer Usage</h3>
+                    <ul class="rule-list">
+                        <li class="rule-item">
+                            <i class="fas fa-check"></i>
+                            <span>No unauthorized software installation</span>
+                        </li>
+                        <li class="rule-item">
+                            <i class="fas fa-check"></i>
+                            <span>Strictly no gaming of any kind</span>
+                        </li>
+                        <li class="rule-item">
+                            <i class="fas fa-check"></i>
+                            <span>Internet use for academic purposes only</span>
+                        </li>
+                        <li class="rule-item">
+                            <i class="fas fa-check"></i>
+                            <span>Do not modify system settings</span>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="rule-card">
+                    <h3><i class="fas fa-clipboard-list"></i> Procedures</h3>
+                    <ul class="rule-list">
+                        <li class="rule-item">
+                            <i class="fas fa-check"></i>
+                            <span>15-minute time limit when others are waiting</span>
+                        </li>
+                        <li class="rule-item">
+                            <i class="fas fa-check"></i>
+                            <span>Properly shut down equipment after use</span>
+                        </li>
+                        <li class="rule-item">
+                            <i class="fas fa-check"></i>
+                            <span>Return all materials to designated areas</span>
+                        </li>
+                        <li class="rule-item">
+                            <i class="fas fa-check"></i>
+                            <span>Follow seating assignments strictly</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="vision-mission">
+                <div class="vision-mission-card">
+                    <h3>University Vision</h3>
+                    <p>"Democratize quality education. Be the visionary and industry leader. Give hope and transform lives."</p>
+                </div>
+                
+                <div class="vision-mission-card">
+                    <h3>University Mission</h3>
+                    <p>"University of Cebu offers affordable and quality education responsive to the demands of local and international communities."</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

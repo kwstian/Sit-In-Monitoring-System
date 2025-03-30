@@ -91,9 +91,9 @@
                                     {% set date_str = current_year ~ '-' ~ '%02d' % current_month_num ~ '-' ~ '%02d' % day %}
                                     {% set is_past = date_str < today %}
                                     {% set is_available = date_str in available_days %}
-                                    {% set is_weekend = (first_day_of_month + day - 1) % 7 == 0 or (first_day_of_month + day - 1) % 7 == 6 %}
+                                    {% set is_sunday = (first_day_of_month + day - 1) % 7 == 0 %}
                                     {% set day_class = "" %}
-                                    {% if is_past or is_weekend %}
+                                    {% if is_past or is_sunday %}
                                         {% set day_class = "unavailable" %}
                                     {% elif is_available %}
                                         {% set day_class = "available" %}
@@ -103,7 +103,7 @@
                                     
                                     <div class="calendar-day {{ day_class }}" 
                                          data-date="{{ date_str }}"
-                                         title="{{ 'Unavailable' if is_past or is_weekend else ('Available' if is_available else 'Fully Booked') }}">
+                                         title="{{ 'Unavailable' if is_past or is_sunday else ('Available' if is_available else 'Fully Booked') }}">
                                         {{ day }}
                                     </div>
                                 {% endfor %}

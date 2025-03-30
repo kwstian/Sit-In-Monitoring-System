@@ -204,7 +204,7 @@ def register():
 def logout():
     session.pop('user_id', None)
     flash('You have been logged out', 'info')
-    return redirect(url_for('login'))
+    return redirect(url_for('index'))
 
 @app.route('/dashboard')
 @login_required
@@ -345,9 +345,9 @@ def reservation():
         date_obj = datetime.date(year, month, i)
         date_str = date_obj.strftime('%Y-%m-%d')
         
-        # Skip past dates and weekends (5 is Saturday, 6 is Sunday)
+        # Skip past dates and Sundays (6 is Sunday)
         weekday = date_obj.weekday()
-        if date_str >= today and weekday < 5:  # Not in past and not a weekend
+        if date_str >= today and weekday < 6:  # Not in past and not a Sunday
             # Check if this date has available slots
             existing_reservations_count = db.execute('''
                 SELECT COUNT(*) as count FROM reservations

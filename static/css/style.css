@@ -23,8 +23,9 @@ body {
 }
 
 /* Header */
+/* Keeping this for backward compatibility */
 .header {
-    background: linear-gradient(to right, var(--primary-color), var(--accent-color));
+    background-color: #2f2a7e;
     color: var(--white);
     padding: 15px 20px;
     display: flex;
@@ -33,42 +34,37 @@ body {
     box-shadow: var(--shadow);
 }
 
-.logo-container {
+/* New header style matching design */
+.main-header {
+    background-color: #2f2a7e;
+    color: white;
     display: flex;
+    justify-content: space-between;
     align-items: center;
+    padding: 15px 30px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
 }
 
-.logo {
-    height: 60px;
-    margin-right: 10px;
-}
-
-.logo-text h1 {
+.system-title {
     font-size: 1.5rem;
-    margin: 0;
-}
-
-.logo-text p {
-    font-size: 0.8rem;
-    opacity: 0.9;
+    font-weight: bold;
 }
 
 .nav-links {
     display: flex;
-    gap: 20px;
+    gap: 25px;
 }
 
 .nav-links a {
-    color: var(--white);
+    color: white;
     text-decoration: none;
     font-weight: 500;
     padding: 5px 10px;
-    border-radius: 4px;
-    transition: background-color 0.3s;
+    letter-spacing: 1px;
 }
 
 .nav-links a:hover {
-    background-color: rgba(255, 255, 255, 0.1);
+    text-decoration: underline;
 }
 
 /* Main Content */
@@ -594,40 +590,68 @@ body {
     min-height: 100vh;
 }
 
-.header-banner {
-    background: linear-gradient(to right, #1a237e, #283593, #3949ab);
-    height: 400px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+/* Main Header (Purple navigation bar) */
+.main-header {
+    background-color: #2f2a7e;
     color: white;
-    text-align: center;
-    position: relative;
-    overflow: hidden;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 30px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
 }
 
-.header-banner::before {
-    content: '';
+.system-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.main-header .nav-links {
+    display: flex;
+    gap: 25px;
+}
+
+.main-header .nav-links a {
+    color: white;
+    text-decoration: none;
+    font-weight: 500;
+    letter-spacing: 1px;
+}
+
+.main-header .nav-links a:hover {
+    text-decoration: underline;
+}
+
+/* Main Banner with Image */
+.main-banner {
+    height: 400px;
+    background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('/static/images/campus-banner.svg');
+    background-size: cover;
+    background-position: center;
+    position: relative;
+}
+
+.banner-overlay {
     position: absolute;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
-    background-image: url('/static/svg/pattern.svg');
-    background-size: cover;
-    opacity: 0.1;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    padding-left: 60px;
 }
 
 .banner-content {
-    position: relative;
-    z-index: 1;
-    padding: 20px;
+    color: white;
+    text-align: left;
 }
 
 .banner-content h1 {
-    font-size: 3.5rem;
-    margin-bottom: 10px;
-    text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    font-size: 2.5rem;
+    margin-bottom: 5px;
+    font-weight: 600;
 }
 
 .banner-content p {

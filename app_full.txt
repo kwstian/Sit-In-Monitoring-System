@@ -318,12 +318,8 @@ def reservation():
     # For demo purposes, we'll set available labs and times
     laboratories = ['524', '526', '542', '528', 'Mac']
     purposes = ['Python', 'Java programming', 'JavaScript', 'C++', 'C#', 'PHP', 'Ruby', 'Other']
-    time_slots = [
-        '7:30 AM', '8:00 AM', '8:30 AM', '9:00 AM', '9:30 AM', '10:00 AM', '10:30 AM', '11:00 AM', '11:30 AM', 
-        '12:00 PM', '12:30 PM', '1:00 PM', '1:30 PM', '2:00 PM', '2:30 PM', '3:00 PM', '3:30 PM', 
-        '4:00 PM', '4:30 PM', '5:00 PM', '5:30 PM', '6:00 PM', '6:30 PM', '7:00 PM', '7:30 PM', 
-        '8:00 PM', '8:30 PM', '9:00 PM', '9:30 PM', '10:00 PM', '10:30 PM', '11:00 PM', '11:30 PM'
-    ]
+    time_slots = ['8:00 AM', '9:00 AM', '10:00 AM', '11:00 AM', '12:00 PM', 
+                  '1:00 PM', '2:00 PM', '3:00 PM', '4:00 PM', '5:00 PM']
     
     # Calculate calendar parameters
     first_day = datetime.date(year, month, 1)
@@ -358,7 +354,7 @@ def reservation():
                 WHERE reservation_date = ? AND laboratory IN (?, ?, ?, ?, ?)
             ''', (date_str, laboratories[0], laboratories[1], laboratories[2], laboratories[3], laboratories[4])).fetchone()['count']
             
-            # If there are fewer reservations than max capacity (5 labs * 33 time slots)
+            # If there are fewer reservations than max capacity (5 labs * 10 time slots)
             if existing_reservations_count < len(laboratories) * len(time_slots):
                 available_days.append(date_str)
     
@@ -435,12 +431,8 @@ def edit_reservation(reservation_id):
     # For demo purposes, we'll set available labs and times
     laboratories = ['524', '526', '542', '528', 'Mac']
     purposes = ['Python', 'Java programming', 'JavaScript', 'C++', 'C#', 'PHP', 'Ruby', 'Other']
-    time_slots = [
-        '7:30 AM', '8:00 AM', '8:30 AM', '9:00 AM', '9:30 AM', '10:00 AM', '10:30 AM', '11:00 AM', '11:30 AM', 
-        '12:00 PM', '12:30 PM', '1:00 PM', '1:30 PM', '2:00 PM', '2:30 PM', '3:00 PM', '3:30 PM', 
-        '4:00 PM', '4:30 PM', '5:00 PM', '5:30 PM', '6:00 PM', '6:30 PM', '7:00 PM', '7:30 PM', 
-        '8:00 PM', '8:30 PM', '9:00 PM', '9:30 PM', '10:00 PM', '10:30 PM', '11:00 PM', '11:30 PM'
-    ]
+    time_slots = ['8:00 AM', '9:00 AM', '10:00 AM', '11:00 AM', '12:00 PM', 
+                  '1:00 PM', '2:00 PM', '3:00 PM', '4:00 PM', '5:00 PM']
     
     if request.method == 'POST':
         purpose = request.form['purpose']

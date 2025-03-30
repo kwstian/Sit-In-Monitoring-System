@@ -369,6 +369,11 @@ def reservation():
     ORDER BY reservation_date
     ''', (session['user_id'],)).fetchall()
     
+    # Use the selected month and year for display, not the current date
+    # Create a date object for the 1st of the selected month to get the month name
+    selected_date = datetime.date(year, month, 1)
+    month_year_display = selected_date.strftime('%B %Y')
+    
     return render_template('reservation.html', 
                           user=user, 
                           laboratories=laboratories,
@@ -376,7 +381,7 @@ def reservation():
                           time_slots=time_slots,
                           days_in_month=days_in_month,
                           first_day_of_month=first_day_of_month,
-                          current_month=now.strftime('%B %Y'),
+                          current_month=month_year_display,
                           current_month_num=month,
                           current_year=year,
                           today=today,

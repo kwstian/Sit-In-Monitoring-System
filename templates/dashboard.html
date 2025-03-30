@@ -7,8 +7,10 @@
         <button class="sidebar-toggle" id="sidebarToggle">
             <i class="fas fa-bars"></i>
         </button>
-        <div class="sidebar-logo" onclick="window.location.href='{{ url_for('index') }}'">
-            <h3>Sit-In System</h3>
+        <div class="sidebar-logo">
+            <a href="{{ url_for('index') }}" style="text-decoration: none; color: white; display: block;">
+                <h3>Sit-In System</h3>
+            </a>
         </div>
         <div class="sidebar-nav">
             <a href="{{ url_for('dashboard') }}" class="active">

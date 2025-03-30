@@ -6,16 +6,42 @@
     <title>Sit-In Monitoring System</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .footer {
+            background-color: #1a237e;
+            color: white;
+            text-align: center;
+            padding: 15px;
+            width: 100%;
+            margin-top: auto;
+        }
+        .wrapper {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        .content-wrapper {
+            flex: 1;
+        }
+    </style>
 </head>
 <body>
-    {% block auth_container %}
-    {% endblock %}
+    <div class="wrapper">
+        <div class="content-wrapper">
+            {% block auth_container %}
+            {% endblock %}
 
-    {% block dashboard_layout %}
-    {% endblock %}
-    
-    {% block main_container %}
-    {% endblock %}
+            {% block dashboard_layout %}
+            {% endblock %}
+            
+            {% block main_container %}
+            {% endblock %}
+        </div>
+        
+        <footer class="footer">
+            <p>&copy; 2025 Kristian A. Magsayo, All rights reserved</p>
+        </footer>
+    </div>
     
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
 </body>

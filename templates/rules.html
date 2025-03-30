@@ -3,22 +3,25 @@
 {% block dashboard_layout %}
 <div class="dashboard">
     <!-- Sidebar -->
-    <div class="sidebar">
-        <div class="sidebar-logo">
+    <div class="sidebar" id="sidebar">
+        <button class="sidebar-toggle" id="sidebarToggle">
+            <i class="fas fa-bars"></i>
+        </button>
+        <div class="sidebar-logo" onclick="window.location.href='{{ url_for('index') }}'">
             <h3>Sit-In System</h3>
         </div>
         <div class="sidebar-nav">
             <a href="{{ url_for('dashboard') }}">
-                <i class="fas fa-tachometer-alt"></i> DASHBOARD
+                <i class="fas fa-tachometer-alt"></i> <span>DASHBOARD</span>
             </a>
             <a href="{{ url_for('reservation') }}">
-                <i class="fas fa-calendar-alt"></i> RESERVATION
+                <i class="fas fa-calendar-alt"></i> <span>RESERVATION</span>
             </a>
             <a href="{{ url_for('rules') }}" class="active">
-                <i class="fas fa-list-ul"></i> RULES
+                <i class="fas fa-list-ul"></i> <span>RULES</span>
             </a>
             <a href="{{ url_for('logout') }}">
-                <i class="fas fa-sign-out-alt"></i> LOGOUT
+                <i class="fas fa-sign-out-alt"></i> <span>LOGOUT</span>
             </a>
         </div>
     </div>

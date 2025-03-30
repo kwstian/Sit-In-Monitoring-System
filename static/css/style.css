@@ -227,16 +227,44 @@ body {
     color: var(--white);
     padding: 20px 0;
     box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+    transition: width 0.3s ease;
+    position: relative;
+}
+
+.sidebar.collapsed {
+    width: 70px;
+}
+
+.sidebar-toggle {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    color: white;
+    background: none;
+    border: none;
+    font-size: 1.2rem;
+    cursor: pointer;
+    z-index: 10;
 }
 
 .sidebar-logo {
     text-align: center;
     padding: 0 20px 20px;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    cursor: pointer;
 }
 
 .sidebar-logo img {
     height: 60px;
+}
+
+.sidebar-logo h3 {
+    transition: opacity 0.3s ease;
+}
+
+.sidebar.collapsed .sidebar-logo h3 {
+    opacity: 0;
+    white-space: nowrap;
 }
 
 .sidebar-nav {
@@ -250,6 +278,7 @@ body {
     color: var(--white);
     text-decoration: none;
     transition: background-color 0.3s;
+    white-space: nowrap;
 }
 
 .sidebar-nav a:hover,
@@ -261,6 +290,15 @@ body {
     margin-right: 10px;
     width: 20px;
     text-align: center;
+}
+
+.sidebar-nav span {
+    transition: opacity 0.3s ease;
+}
+
+.sidebar.collapsed .sidebar-nav span {
+    opacity: 0;
+    display: none;
 }
 
 .content-area {

@@ -3,22 +3,25 @@
 {% block dashboard_layout %}
 <div class="dashboard">
     <!-- Sidebar -->
-    <div class="sidebar">
-        <div class="sidebar-logo">
+    <div class="sidebar" id="sidebar">
+        <button class="sidebar-toggle" id="sidebarToggle">
+            <i class="fas fa-bars"></i>
+        </button>
+        <div class="sidebar-logo" onclick="window.location.href='{{ url_for('index') }}'">
             <h3>Sit-In System</h3>
         </div>
         <div class="sidebar-nav">
             <a href="{{ url_for('dashboard') }}" class="active">
-                <i class="fas fa-tachometer-alt"></i> DASHBOARD
+                <i class="fas fa-tachometer-alt"></i> <span>DASHBOARD</span>
             </a>
             <a href="{{ url_for('reservation') }}">
-                <i class="fas fa-calendar-alt"></i> RESERVATION
+                <i class="fas fa-calendar-alt"></i> <span>RESERVATION</span>
             </a>
             <a href="{{ url_for('rules') }}">
-                <i class="fas fa-list-ul"></i> RULES
+                <i class="fas fa-list-ul"></i> <span>RULES</span>
             </a>
             <a href="{{ url_for('logout') }}">
-                <i class="fas fa-sign-out-alt"></i> LOGOUT
+                <i class="fas fa-sign-out-alt"></i> <span>LOGOUT</span>
             </a>
         </div>
     </div>
@@ -38,9 +41,9 @@
                 {% endwith %}
             </div>
             
-            <div class="profile-section">
+            <div class="profile-section" style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
                 <!-- Student Information Card -->
-                <div class="card">
+                <div class="card" style="height: 100%;">
                     <div class="card-header">
                         <h3>Student Information</h3>
                     </div>
@@ -87,7 +90,7 @@
                 </div>
                 
                 <!-- Announcements and Feedback Card -->
-                <div class="card">
+                <div class="card" style="height: 100%;">
                     <div class="card-header">
                         <h3>Announcements & Feedback</h3>
                     </div>

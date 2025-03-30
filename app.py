@@ -248,12 +248,30 @@ def edit_profile():
                 flash('Email already registered', 'danger')
                 return redirect(url_for('edit_profile'))
         
+        # Handle profile picture upload
+        profile_pic_path = user['profile_pic']  # Default to current picture
+        if 'profile_pic' in request.files and request.files['profile_pic'].filename != '':
+            profile_pic = request.files['profile_pic']
+            
+            # Ensure static/uploads directory exists
+            upload_dir = os.path.join(app.static_folder, 'uploads')
+            if not os.path.exists(upload_dir):
+                os.makedirs(upload_dir)
+            
+            # Secure the filename and save the file
+            filename = secure_filename(f"{session['user_id']}_{profile_pic.filename}")
+            file_path = os.path.join(upload_dir, filename)
+            profile_pic.save(file_path)
+            
+            # Update profile picture path in DB (store relative path from static folder)
+            profile_pic_path = f"uploads/{filename}"
+        
         # Update user information
         db.execute('''
         UPDATE users 
-        SET first_name = ?, middle_name = ?, last_name = ?, email = ?, course = ?, level = ?, username = ?
+        SET first_name = ?, middle_name = ?, last_name = ?, email = ?, course = ?, level = ?, username = ?, profile_pic = ?
         WHERE id = ?
-        ''', (first_name, middle_name, last_name, email, course, level, username, session['user_id']))
+        ''', (first_name, middle_name, last_name, email, course, level, username, profile_pic_path, session['user_id']))
         db.commit()
         
         flash('Profile updated successfully', 'success')

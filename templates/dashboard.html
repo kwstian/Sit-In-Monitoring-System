@@ -25,14 +25,7 @@
     
     <!-- Content Area -->
     <div class="content-area">
-        <div class="main-header">
-            <div class="system-title">Sit-In Monitoring System</div>
-            <div class="nav-links">
-                <a href="{{ url_for('dashboard') }}">HOME</a>
-                <a href="{{ url_for('rules') }}">ABOUT US</a>
-                <a href="{{ url_for('logout') }}">LOGOUT</a>
-            </div>
-        </div>
+
         
         <div class="main-content">
             <div class="flash-messages">
@@ -54,7 +47,13 @@
                     <div class="card-body">
                         <div class="profile-info">
                             <div class="info-row">
+                                {% if user['profile_pic'] %}
+                                <div class="profile-image">
+                                    <img src="{{ url_for('static', filename=user['profile_pic']) }}" alt="Profile Picture" style="max-width: 150px; max-height: 150px; border-radius: 5px;">
+                                </div>
+                                {% else %}
                                 <div class="info-label">No profile picture available</div>
+                                {% endif %}
                             </div>
                             <div class="info-row">
                                 <div class="info-label">ID No:</div>
@@ -108,26 +107,7 @@
                                 </div>
                                 {% endfor %}
                             </div>
-                            
-                            <!-- Calendar display -->
-                            <div class="calendar-month">March 2025</div>
-                            <div class="calendar-grid">
-                                <div class="calendar-day-header">MON</div>
-                                <div class="calendar-day-header">TUE</div>
-                                <div class="calendar-day-header">WED</div>
-                                <div class="calendar-day-header">THU</div>
-                                <div class="calendar-day-header">FRI</div>
-                                <div class="calendar-day-header">SAT</div>
-                                <div class="calendar-day-header">SUN</div>
-                                
-                                <div class="calendar-day">24</div>
-                                <div class="calendar-day">25</div>
-                                <div class="calendar-day">26</div>
-                                <div class="calendar-day">27</div>
-                                <div class="calendar-day">28</div>
-                                <div class="calendar-day">29</div>
-                                <div class="calendar-day today">30</div>
-                            </div>
+
                         </div>
                         
                         <div id="feedback-tab" class="tab-content">

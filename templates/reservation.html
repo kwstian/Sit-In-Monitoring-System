@@ -50,9 +50,23 @@
                         <div class="calendar">
                             <div class="calendar-header">
                                 <div class="calendar-nav">
-                                    <button class="prev-month"><i class="fas fa-chevron-left"></i></button>
+                                    <button class="prev-month" title="Previous Month"><i class="fas fa-chevron-left"></i></button>
                                     <div class="calendar-month">{{ current_month }}</div>
-                                    <button class="next-month"><i class="fas fa-chevron-right"></i></button>
+                                    <button class="next-month" title="Next Month"><i class="fas fa-chevron-right"></i></button>
+                                </div>
+                            </div>
+                            <div class="calendar-legend" style="display: flex; gap: 15px; margin-bottom: 10px; font-size: 12px;">
+                                <div style="display: flex; align-items: center;">
+                                    <div style="width: 15px; height: 15px; background-color: rgba(46, 204, 113, 0.1); border: 1px solid #2ecc71; margin-right: 5px;"></div>
+                                    <span>Available</span>
+                                </div>
+                                <div style="display: flex; align-items: center;">
+                                    <div style="width: 15px; height: 15px; background-color: rgba(231, 76, 60, 0.1); border: 1px solid #e74c3c; margin-right: 5px;"></div>
+                                    <span>Fully Booked</span>
+                                </div>
+                                <div style="display: flex; align-items: center;">
+                                    <div style="width: 15px; height: 15px; background-color: #f5f5f5; margin-right: 5px; color: #aaa; text-align: center; line-height: 15px; font-size: 10px;">X</div>
+                                    <span>Unavailable</span>
                                 </div>
                             </div>
                             
@@ -65,8 +79,31 @@
                                 <div class="calendar-day-header">Fri</div>
                                 <div class="calendar-day-header">Sat</div>
                                 
-                                {% for day in range(1, 32) %}
-                                    <div class="calendar-day" data-date="2025-03-{{ '%02d' % day }}">{{ day }}</div>
+                                <!-- Empty cells for days of the week before the 1st of the month -->
+                                {% for _ in range(first_day_of_month) %}
+                                    <div class="calendar-day empty"></div>
+                                {% endfor %}
+
+                                <!-- Actual days of the month -->
+                                {% for day in range(1, days_in_month + 1) %}
+                                    {% set date_str = current_year ~ '-' ~ '%02d' % current_month_num ~ '-' ~ '%02d' % day %}
+                                    {% set is_past = date_str < today %}
+                                    {% set is_available = date_str in available_days %}
+                                    {% set is_weekend = (first_day_of_month + day - 1) % 7 == 0 or (first_day_of_month + day - 1) % 7 == 6 %}
+                                    {% set day_class = "" %}
+                                    {% if is_past or is_weekend %}
+                                        {% set day_class = "unavailable" %}
+                                    {% elif is_available %}
+                                        {% set day_class = "available" %}
+                                    {% else %}
+                                        {% set day_class = "booked" %}
+                                    {% endif %}
+                                    
+                                    <div class="calendar-day {{ day_class }}" 
+                                         data-date="{{ date_str }}"
+                                         title="{{ 'Unavailable' if is_past or is_weekend else ('Available' if is_available else 'Fully Booked') }}">
+                                        {{ day }}
+                                    </div>
                                 {% endfor %}
                             </div>
                         </div>
@@ -108,11 +145,13 @@
                                     <input type="hidden" name="time_slot" value="">
                                 </div>
                                 
-                                <div class="reservation-details">
-                                    <div class="detail-item">Selected Date: <span id="selected-date-display">None</span></div>
-                                    <div class="detail-item">Selected Time: <span id="selected-time">None</span></div>
-                                    <div class="detail-item">Purpose: <span id="selected-purpose">None</span></div>
-                                    <div class="detail-item">Laboratory: <span id="selected-laboratory">None</span></div>
+                                <div class="reservation-details" style="margin-top: 25px; background-color: #f9f9f9; padding: 15px; border-radius: 5px; border-left: 4px solid #563d7c;">
+                                    <h4 style="margin-bottom: 10px; color: #563d7c;">Reservation Summary</h4>
+                                    <div class="detail-item">Selected Date: <span id="selected-date-display">None selected</span></div>
+                                    <div class="detail-item">Selected Time: <span id="selected-time">None selected</span></div>
+                                    <div class="detail-item">Purpose: <span id="selected-purpose">None selected</span></div>
+                                    <div class="detail-item">Laboratory: <span id="selected-laboratory">None selected</span></div>
+                                    <div style="margin-top: 10px; font-size: 13px; color: #666;">Please select a date (green), laboratory, purpose, and time to complete your reservation.</div>
                                 </div>
                                 
                                 <button type="submit" class="btn btn-block" style="margin-top: 20px;">Book Reservation</button>

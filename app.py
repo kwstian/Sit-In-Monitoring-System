@@ -303,10 +303,17 @@ def submit_feedback():
 def reservation():
     user = get_user(session['user_id'])
     
-    # Get current month and year for the calendar
+    # Get current month and year for the calendar, or use the ones from the URL
     now = datetime.datetime.now()
-    month = now.month
-    year = now.year
+    month = request.args.get('month', type=int, default=now.month)
+    year = request.args.get('year', type=int, default=now.year)
+    
+    # Validate month and year
+    if month < 1 or month > 12:
+        month = now.month
+    
+    if year < now.year or year > now.year + 1:  # Only allow current year and next year
+        year = now.year
     
     # For demo purposes, we'll set available labs and times
     laboratories = ['524', '526', '542', '528', 'Mac']
@@ -314,16 +321,44 @@ def reservation():
     time_slots = ['8:00 AM', '9:00 AM', '10:00 AM', '11:00 AM', '12:00 PM', 
                   '1:00 PM', '2:00 PM', '3:00 PM', '4:00 PM', '5:00 PM']
     
-    # Get calendar days for the current month
+    # Calculate calendar parameters
     first_day = datetime.date(year, month, 1)
-    num_days = (datetime.date(year, month + 1, 1) - first_day).days if month < 12 else (datetime.date(year + 1, 1, 1) - first_day).days
+    if month == 12:
+        next_month = datetime.date(year + 1, 1, 1)
+    else:
+        next_month = datetime.date(year, month + 1, 1)
     
-    calendar_days = []
-    for i in range(1, num_days + 1):
-        calendar_days.append(datetime.date(year, month, i))
+    days_in_month = (next_month - first_day).days
+    first_day_of_month = first_day.weekday()  # Monday is 0, Sunday is 6
+    # Convert to Sunday as 0 format
+    first_day_of_month = (first_day_of_month + 1) % 7
+    
+    # Get today's date as string for comparisons
+    today = datetime.date.today().strftime('%Y-%m-%d')
+    
+    # Get all existing reservations for all labs
+    db = get_db()
+    
+    # Define available days (all weekdays in the month that are not in the past)
+    available_days = []
+    for i in range(1, days_in_month + 1):
+        date_obj = datetime.date(year, month, i)
+        date_str = date_obj.strftime('%Y-%m-%d')
+        
+        # Skip past dates and weekends (5 is Saturday, 6 is Sunday)
+        weekday = date_obj.weekday()
+        if date_str >= today and weekday < 5:  # Not in past and not a weekend
+            # Check if this date has available slots
+            existing_reservations_count = db.execute('''
+                SELECT COUNT(*) as count FROM reservations
+                WHERE reservation_date = ? AND laboratory IN (?, ?, ?, ?, ?)
+            ''', (date_str, laboratories[0], laboratories[1], laboratories[2], laboratories[3], laboratories[4])).fetchone()['count']
+            
+            # If there are fewer reservations than max capacity (5 labs * 10 time slots)
+            if existing_reservations_count < len(laboratories) * len(time_slots):
+                available_days.append(date_str)
     
     # Get user's existing reservations
-    db = get_db()
     user_reservations = db.execute('''
     SELECT * FROM reservations 
     WHERE user_id = ? 
@@ -335,8 +370,13 @@ def reservation():
                           laboratories=laboratories,
                           purposes=purposes,
                           time_slots=time_slots,
-                          calendar_days=calendar_days,
+                          days_in_month=days_in_month,
+                          first_day_of_month=first_day_of_month,
                           current_month=now.strftime('%B %Y'),
+                          current_month_num=month,
+                          current_year=year,
+                          today=today,
+                          available_days=available_days,
                           user_reservations=user_reservations)
 
 @app.route('/book_reservation', methods=['POST'])

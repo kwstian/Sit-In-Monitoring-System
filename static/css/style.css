@@ -528,9 +528,15 @@ body {
     border-radius: 4px;
     cursor: pointer;
     transition: background-color 0.3s;
+    position: relative;
 }
 
-.calendar-day:hover {
+.calendar-day.empty {
+    background: none;
+    cursor: default;
+}
+
+.calendar-day:not(.empty):hover {
     background-color: rgba(0, 0, 0, 0.03);
 }
 
@@ -542,6 +548,27 @@ body {
 .calendar-day.selected {
     background-color: var(--primary-color);
     color: var(--white);
+}
+
+.calendar-day.available {
+    background-color: rgba(46, 204, 113, 0.1);
+    border: 1px solid #2ecc71;
+}
+
+.calendar-day.available:hover {
+    background-color: rgba(46, 204, 113, 0.2);
+}
+
+.calendar-day.booked {
+    background-color: rgba(231, 76, 60, 0.1);
+    border: 1px solid #e74c3c;
+}
+
+.calendar-day.unavailable {
+    color: #aaa;
+    background-color: #f5f5f5;
+    cursor: not-allowed;
+    text-decoration: line-through;
 }
 
 .reservation-form {

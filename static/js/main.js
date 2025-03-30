@@ -55,19 +55,91 @@ document.addEventListener('DOMContentLoaded', function() {
     
     if (calendarDays.length > 0 && selectedDateInput) {
         calendarDays.forEach(day => {
-            day.addEventListener('click', function() {
-                // Remove selected class from all days
-                calendarDays.forEach(d => d.classList.remove('selected'));
-                
-                // Add selected class to clicked day
-                this.classList.add('selected');
-                
-                // Update the hidden input value
-                selectedDateInput.value = this.getAttribute('data-date');
-                
-                // Update the displayed selected date
-                document.getElementById('selected-date-display').textContent = this.getAttribute('data-date');
-            });
+            if (!day.classList.contains('empty') && !day.classList.contains('unavailable')) {
+                day.addEventListener('click', function() {
+                    // Remove selected class from all days
+                    calendarDays.forEach(d => d.classList.remove('selected'));
+                    
+                    // Add selected class to clicked day
+                    this.classList.add('selected');
+                    
+                    // Update the hidden input value
+                    selectedDateInput.value = this.getAttribute('data-date');
+                    
+                    // Update the displayed selected date
+                    document.getElementById('selected-date-display').textContent = this.getAttribute('data-date');
+                    
+                    // Change booking button style to indicate selection
+                    const bookButton = document.querySelector('button[type="submit"].btn-block');
+                    if (bookButton) {
+                        bookButton.classList.add('btn-primary');
+                    }
+                });
+            } else if (day.classList.contains('unavailable')) {
+                day.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    alert('This date is unavailable for booking. Please select an available date (green).');
+                });
+            } else if (day.classList.contains('booked')) {
+                day.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    alert('This date is fully booked. Please select an available date (green).');
+                });
+            }
+        });
+    }
+    
+    // Calendar navigation
+    const prevMonthBtn = document.querySelector('.prev-month');
+    const nextMonthBtn = document.querySelector('.next-month');
+    
+    if (prevMonthBtn && nextMonthBtn) {
+        prevMonthBtn.addEventListener('click', function() {
+            const currentUrl = new URL(window.location.href);
+            const urlParams = new URLSearchParams(currentUrl.search);
+            
+            // Get the current month and year from the URL or default to current
+            let month = parseInt(urlParams.get('month')) || new Date().getMonth() + 1;
+            let year = parseInt(urlParams.get('year')) || new Date().getFullYear();
+            
+            // Go to previous month
+            month--;
+            if (month < 1) {
+                month = 12;
+                year--;
+            }
+            
+            // Update URL parameters
+            urlParams.set('month', month);
+            urlParams.set('year', year);
+            currentUrl.search = urlParams.toString();
+            
+            // Navigate to the updated URL
+            window.location.href = currentUrl.toString();
+        });
+        
+        nextMonthBtn.addEventListener('click', function() {
+            const currentUrl = new URL(window.location.href);
+            const urlParams = new URLSearchParams(currentUrl.search);
+            
+            // Get the current month and year from the URL or default to current
+            let month = parseInt(urlParams.get('month')) || new Date().getMonth() + 1;
+            let year = parseInt(urlParams.get('year')) || new Date().getFullYear();
+            
+            // Go to next month
+            month++;
+            if (month > 12) {
+                month = 1;
+                year++;
+            }
+            
+            // Update URL parameters
+            urlParams.set('month', month);
+            urlParams.set('year', year);
+            currentUrl.search = urlParams.toString();
+            
+            // Navigate to the updated URL
+            window.location.href = currentUrl.toString();
         });
     }
     
@@ -85,6 +157,35 @@ document.addEventListener('DOMContentLoaded', function() {
         form.addEventListener('submit', function(event) {
             const requiredFields = form.querySelectorAll('[required]');
             let isValid = true;
+            
+            // Check for reservation form specifically
+            if (form.action.includes('book_reservation')) {
+                const dateInput = form.querySelector('input[name="date"]');
+                if (!dateInput.value.trim()) {
+                    isValid = false;
+                    
+                    // Create a flash message at the top of the form
+                    const existingAlert = form.querySelector('.date-alert');
+                    if (!existingAlert) {
+                        const alertMsg = document.createElement('div');
+                        alertMsg.className = 'alert alert-danger date-alert';
+                        alertMsg.style.marginBottom = '15px';
+                        alertMsg.innerHTML = '<strong>Error:</strong> Please select a date from the calendar.';
+                        form.insertBefore(alertMsg, form.firstChild);
+                        
+                        // Scroll to error message
+                        alertMsg.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        
+                        // Auto-dismiss after 5 seconds
+                        setTimeout(() => {
+                            alertMsg.style.opacity = '0';
+                            setTimeout(() => {
+                                alertMsg.remove();
+                            }, 500);
+                        }, 5000);
+                    }
+                }
+            }
             
             requiredFields.forEach(field => {
                 if (!field.value.trim()) {

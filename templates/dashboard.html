@@ -5,7 +5,7 @@
     <!-- Sidebar -->
     <div class="sidebar">
         <div class="sidebar-logo">
-            <img src="{{ url_for('static', filename='svg/logo.svg') }}" alt="UC Logo">
+            <h3>Sit-In System</h3>
         </div>
         <div class="sidebar-nav">
             <a href="{{ url_for('dashboard') }}" class="active">
@@ -28,7 +28,7 @@
         <div class="header">
             <div class="logo-container">
                 <div class="logo-text">
-                    <h1>University of Cebu - Main Campus</h1>
+                    <h1>Sit-In Monitoring System</h1>
                 </div>
             </div>
             <div class="nav-links">
@@ -65,20 +65,24 @@
                                 <div class="info-value">{{ user['id_number'] }}</div>
                             </div>
                             <div class="info-row">
+                                <div class="info-label">Username:</div>
+                                <div class="info-value">{{ user['username'] }}</div>
+                            </div>
+                            <div class="info-row">
                                 <div class="info-label">Full Name:</div>
-                                <div class="info-value">{{ user['first_name'] }} {{ user['last_name'] }}</div>
+                                <div class="info-value">{{ user['first_name'] }} {% if user['middle_name'] %}{{ user['middle_name'] }} {% endif %}{{ user['last_name'] }}</div>
                             </div>
                             <div class="info-row">
                                 <div class="info-label">Course:</div>
                                 <div class="info-value">{{ user['course'] }}</div>
                             </div>
                             <div class="info-row">
-                                <div class="info-label">Email:</div>
-                                <div class="info-value">{{ user['email'] }}</div>
+                                <div class="info-label">Year Level:</div>
+                                <div class="info-value">{{ user['level'] }}</div>
                             </div>
                             <div class="info-row">
-                                <div class="info-label">Session:</div>
-                                <div class="info-value">{{ user['session'] }}</div>
+                                <div class="info-label">Email:</div>
+                                <div class="info-value">{{ user['email'] }}</div>
                             </div>
                             <div class="profile-actions">
                                 <button class="btn" onclick="location.href='{{ url_for('edit_profile') }}'">EDIT PROFILE</button>
@@ -134,7 +138,7 @@
                             <form action="{{ url_for('submit_feedback') }}" method="POST">
                                 <div class="form-group">
                                     <label for="laboratory-select">Laboratory</label>
-                                    <select id="laboratory-select" class="form-control" required>
+                                    <select id="laboratory-select" class="form-control" name="laboratory" required>
                                         <option value="">Select Laboratory</option>
                                         <option value="524">524</option>
                                         <option value="526">526</option>
@@ -142,33 +146,31 @@
                                         <option value="528">528</option>
                                         <option value="Mac">Mac</option>
                                     </select>
-                                    <input type="hidden" name="laboratory">
                                 </div>
                                 
                                 <label>Rating</label>
                                 <div class="rating-options">
                                     <label class="rating-option">
-                                        <input type="radio" name="rating_option" value="1">
+                                        <input type="radio" name="rating" value="1">
                                         <span class="rating-emoji">😞</span>
                                     </label>
                                     <label class="rating-option">
-                                        <input type="radio" name="rating_option" value="2">
+                                        <input type="radio" name="rating" value="2">
                                         <span class="rating-emoji">😐</span>
                                     </label>
                                     <label class="rating-option">
-                                        <input type="radio" name="rating_option" value="3">
+                                        <input type="radio" name="rating" value="3" checked>
                                         <span class="rating-emoji">🙂</span>
                                     </label>
                                     <label class="rating-option">
-                                        <input type="radio" name="rating_option" value="4">
+                                        <input type="radio" name="rating" value="4">
                                         <span class="rating-emoji">😊</span>
                                     </label>
                                     <label class="rating-option">
-                                        <input type="radio" name="rating_option" value="5">
+                                        <input type="radio" name="rating" value="5">
                                         <span class="rating-emoji">😄</span>
                                     </label>
                                 </div>
-                                <input type="hidden" name="rating" value="3">
                                 
                                 <div class="form-group">
                                     <label for="feedback-message">Message</label>

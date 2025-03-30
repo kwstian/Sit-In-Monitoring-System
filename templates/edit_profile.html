@@ -5,7 +5,7 @@
     <!-- Sidebar -->
     <div class="sidebar">
         <div class="sidebar-logo">
-            <img src="{{ url_for('static', filename='svg/logo.svg') }}" alt="UC Logo">
+            <h3>Sit-In System</h3>
         </div>
         <div class="sidebar-nav">
             <a href="{{ url_for('dashboard') }}" class="active">
@@ -28,7 +28,7 @@
         <div class="header">
             <div class="logo-container">
                 <div class="logo-text">
-                    <h1>University of Cebu - Main Campus</h1>
+                    <h1>Sit-In Monitoring System</h1>
                 </div>
             </div>
             <div class="nav-links">
@@ -59,21 +59,47 @@
                             <label for="profile_pic">Upload Profile Picture:</label>
                             <input type="file" id="profile_pic" name="profile_pic" class="form-control">
                         </div>
-                        <div class="form-group">
-                            <label for="first_name">First Name:</label>
-                            <input type="text" id="first_name" name="first_name" class="form-control" value="{{ user['first_name'] }}" required>
+                        <div class="form-row">
+                            <div class="form-group col-md-4">
+                                <label for="last_name">Last Name:</label>
+                                <input type="text" id="last_name" name="last_name" class="form-control" value="{{ user['last_name'] }}" required>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label for="first_name">First Name:</label>
+                                <input type="text" id="first_name" name="first_name" class="form-control" value="{{ user['first_name'] }}" required>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label for="middle_name">Middle Name:</label>
+                                <input type="text" id="middle_name" name="middle_name" class="form-control" value="{{ user['middle_name'] }}">
+                            </div>
                         </div>
-                        <div class="form-group">
-                            <label for="last_name">Last Name:</label>
-                            <input type="text" id="last_name" name="last_name" class="form-control" value="{{ user['last_name'] }}" required>
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label for="course">Course:</label>
+                                <select id="course" name="course" class="form-control" required>
+                                    <option value="BSIT" {% if user['course'] == 'BSIT' %}selected{% endif %}>Bachelor of Science in Information Technology</option>
+                                    <option value="BSCS" {% if user['course'] == 'BSCS' %}selected{% endif %}>Bachelor of Science in Computer Science</option>
+                                    <option value="BSCRIM" {% if user['course'] == 'BSCRIM' %}selected{% endif %}>Bachelor of Science in Criminology</option>
+                                    <option value="BSHM" {% if user['course'] == 'BSHM' %}selected{% endif %}>Bachelor of Science in Hospitality Management</option>
+                                </select>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="level">Year Level:</label>
+                                <select id="level" name="level" class="form-control" required>
+                                    <option value="1st Year" {% if user['level'] == '1st Year' %}selected{% endif %}>1st Year</option>
+                                    <option value="2nd Year" {% if user['level'] == '2nd Year' %}selected{% endif %}>2nd Year</option>
+                                    <option value="3rd Year" {% if user['level'] == '3rd Year' %}selected{% endif %}>3rd Year</option>
+                                    <option value="4th Year" {% if user['level'] == '4th Year' %}selected{% endif %}>4th Year</option>
+                                </select>
+                            </div>
                         </div>
                         <div class="form-group">
                             <label for="email">Email:</label>
                             <input type="email" id="email" name="email" class="form-control" value="{{ user['email'] }}" required>
                         </div>
                         <div class="form-group">
-                            <label for="course">Course:</label>
-                            <input type="text" id="course" name="course" class="form-control" value="{{ user['course'] }}" required>
+                            <label for="username">Username:</label>
+                            <input type="text" id="username" name="username" class="form-control" value="{{ user['username'] }}" required>
                         </div>
                         <button type="submit" class="btn">Save Changes</button>
                         <a href="{{ url_for('dashboard') }}" class="btn btn-secondary">Cancel</a>

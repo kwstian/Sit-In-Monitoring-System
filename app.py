@@ -49,9 +49,11 @@ def create_tables():
         id_number TEXT UNIQUE NOT NULL,
         first_name TEXT NOT NULL,
         last_name TEXT NOT NULL,
+        middle_name TEXT,
         email TEXT UNIQUE NOT NULL,
         course TEXT NOT NULL,
-        session TEXT,
+        level TEXT NOT NULL,
+        username TEXT UNIQUE NOT NULL,
         password TEXT NOT NULL,
         profile_pic TEXT
     )
@@ -100,7 +102,7 @@ def create_tables():
         cursor.execute('''
         INSERT INTO announcements (title, content)
         VALUES 
-        ('DEAN:', 'Meeting now at the room S304!'),
+        ('System Maintenance', 'The laboratory system will be under maintenance this weekend.'),
         ('Welcome to the Sit-In Monitoring System', 'Please make sure to follow all laboratory rules and guidelines')
         ''')
     
@@ -136,18 +138,18 @@ def index():
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
-        id_number = request.form['id_number']
+        username = request.form['username']
         password = request.form['password']
         
         db = get_db()
-        user = db.execute('SELECT * FROM users WHERE id_number = ?', (id_number,)).fetchone()
+        user = db.execute('SELECT * FROM users WHERE username = ?', (username,)).fetchone()
         
         if user and check_password_hash(user['password'], password):
             session['user_id'] = user['id']
             flash('Login successful!', 'success')
             return redirect(url_for('dashboard'))
         else:
-            flash('Invalid ID number or password', 'danger')
+            flash('Invalid username or password', 'danger')
     
     return render_template('login.html')
 
@@ -156,10 +158,12 @@ def register():
     if request.method == 'POST':
         id_number = request.form['id_number']
         first_name = request.form['first_name']
+        middle_name = request.form.get('middle_name', '')
         last_name = request.form['last_name']
         email = request.form['email']
         course = request.form['course']
-        session_value = request.form['session']
+        level = request.form['level']
+        username = request.form['username']
         password = request.form['password']
         confirm_password = request.form['confirm_password']
         
@@ -173,20 +177,20 @@ def register():
         
         db = get_db()
         
-        # Check if ID number or email already exists
-        existing_user = db.execute('SELECT * FROM users WHERE id_number = ? OR email = ?', 
-                                 (id_number, email)).fetchone()
+        # Check if ID number, email or username already exists
+        existing_user = db.execute('SELECT * FROM users WHERE id_number = ? OR email = ? OR username = ?', 
+                                 (id_number, email, username)).fetchone()
         
         if existing_user:
-            flash('ID number or email already registered', 'danger')
+            flash('ID number, email or username already registered', 'danger')
             return redirect(url_for('register'))
         
         # Insert new user
         try:
             db.execute('''
-            INSERT INTO users (id_number, first_name, last_name, email, course, session, password, profile_pic)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-            ''', (id_number, first_name, last_name, email, course, session_value, hashed_password, None))
+            INSERT INTO users (id_number, first_name, middle_name, last_name, email, course, level, username, password, profile_pic)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            ''', (id_number, first_name, middle_name, last_name, email, course, level, username, hashed_password, None))
             db.commit()
             
             flash('Registration successful! You can now log in', 'success')
@@ -219,18 +223,37 @@ def edit_profile():
     
     if request.method == 'POST':
         first_name = request.form['first_name']
+        middle_name = request.form.get('middle_name', '')
         last_name = request.form['last_name']
         email = request.form['email']
         course = request.form['course']
+        level = request.form['level']
+        username = request.form['username']
         
         db = get_db()
+        
+        # Check if the username was changed and already exists
+        if username != user['username']:
+            existing_user = db.execute('SELECT * FROM users WHERE username = ? AND id != ?', 
+                                 (username, session['user_id'])).fetchone()
+            if existing_user:
+                flash('Username already taken', 'danger')
+                return redirect(url_for('edit_profile'))
+                
+        # Check if email was changed and already exists
+        if email != user['email']:
+            existing_user = db.execute('SELECT * FROM users WHERE email = ? AND id != ?', 
+                                 (email, session['user_id'])).fetchone()
+            if existing_user:
+                flash('Email already registered', 'danger')
+                return redirect(url_for('edit_profile'))
         
         # Update user information
         db.execute('''
         UPDATE users 
-        SET first_name = ?, last_name = ?, email = ?, course = ?
+        SET first_name = ?, middle_name = ?, last_name = ?, email = ?, course = ?, level = ?, username = ?
         WHERE id = ?
-        ''', (first_name, last_name, email, course, session['user_id']))
+        ''', (first_name, middle_name, last_name, email, course, level, username, session['user_id']))
         db.commit()
         
         flash('Profile updated successfully', 'success')

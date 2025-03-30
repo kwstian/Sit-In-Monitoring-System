@@ -1,0 +1,100 @@
+{% extends 'base.html' %}
+
+{% block dashboard_layout %}
+<div class="dashboard">
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="sidebar-logo">
+            <h3>Sit-In System</h3>
+        </div>
+        <div class="sidebar-nav">
+            <a href="{{ url_for('dashboard') }}">
+                <i class="fas fa-tachometer-alt"></i> DASHBOARD
+            </a>
+            <a href="{{ url_for('reservation') }}" class="active">
+                <i class="fas fa-calendar-alt"></i> RESERVATION
+            </a>
+            <a href="{{ url_for('rules') }}">
+                <i class="fas fa-list-ul"></i> RULES
+            </a>
+            <a href="{{ url_for('logout') }}">
+                <i class="fas fa-sign-out-alt"></i> LOGOUT
+            </a>
+        </div>
+    </div>
+    
+    <!-- Content Area -->
+    <div class="content-area">
+        <div class="header">
+            <div class="logo-container">
+                <div class="logo-text">
+                    <h1>Sit-In Monitoring System</h1>
+                </div>
+            </div>
+            <div class="nav-links">
+                <a href="{{ url_for('dashboard') }}">HOME</a>
+                <a href="{{ url_for('rules') }}">ABOUT US</a>
+                <a href="{{ url_for('logout') }}">LOGOUT</a>
+            </div>
+        </div>
+        
+        <div class="main-content">
+            <div class="flash-messages">
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        {% for category, message in messages %}
+                            <div class="alert alert-{{ category }}">{{ message }}</div>
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <h3>Edit Reservation</h3>
+                </div>
+                <div class="card-body">
+                    <form action="{{ url_for('edit_reservation', reservation_id=reservation['id']) }}" method="POST">
+                        <div class="form-group">
+                            <label for="date">Reservation Date:</label>
+                            <input type="date" id="date" name="date" class="form-control" value="{{ reservation['reservation_date'] }}" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="time-slot-select">Time:</label>
+                            <select id="time-slot-select" name="time_slot" class="form-control" required>
+                                {% for time_slot in time_slots %}
+                                    <option value="{{ time_slot }}" {% if time_slot == reservation['time_slot'] %}selected{% endif %}>{{ time_slot }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="laboratory-select">Laboratory:</label>
+                            <select id="laboratory-select" name="laboratory" class="form-control" required>
+                                {% for lab in laboratories %}
+                                    <option value="{{ lab }}" {% if lab == reservation['laboratory'] %}selected{% endif %}>{{ lab }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="purpose-select">Purpose:</label>
+                            <select id="purpose-select" name="purpose" class="form-control" required>
+                                {% for purpose in purposes %}
+                                    <option value="{{ purpose }}" {% if purpose == reservation['purpose'] %}selected{% endif %}>{{ purpose }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary">Update Reservation</button>
+                            <a href="{{ url_for('reservation') }}" class="btn btn-secondary">Cancel</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

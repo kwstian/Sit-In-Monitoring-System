@@ -133,7 +133,7 @@ def get_user(user_id):
 def index():
     if 'user_id' in session:
         return redirect(url_for('dashboard'))
-    return redirect(url_for('login'))
+    return render_template('index.html')
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -353,6 +353,85 @@ def book_reservation():
     db.commit()
     
     flash('Reservation booked successfully', 'success')
+    return redirect(url_for('reservation'))
+
+@app.route('/edit_reservation/<int:reservation_id>', methods=['GET', 'POST'])
+@login_required
+def edit_reservation(reservation_id):
+    user = get_user(session['user_id'])
+    
+    db = get_db()
+    
+    # Get the reservation details
+    reservation = db.execute('SELECT * FROM reservations WHERE id = ? AND user_id = ?', 
+                           (reservation_id, session['user_id'])).fetchone()
+    
+    if not reservation:
+        flash('Reservation not found or you do not have permission to edit it', 'danger')
+        return redirect(url_for('reservation'))
+    
+    # For demo purposes, we'll set available labs and times
+    laboratories = ['524', '526', '542', '528', 'Mac']
+    purposes = ['Python', 'Java programming', 'JavaScript', 'C++', 'C#', 'PHP', 'Ruby', 'Other']
+    time_slots = ['8:00 AM', '9:00 AM', '10:00 AM', '11:00 AM', '12:00 PM', 
+                  '1:00 PM', '2:00 PM', '3:00 PM', '4:00 PM', '5:00 PM']
+    
+    if request.method == 'POST':
+        purpose = request.form['purpose']
+        laboratory = request.form['laboratory']
+        date = request.form['date']
+        time_slot = request.form['time_slot']
+        
+        if not all([purpose, laboratory, date, time_slot]):
+            flash('Please fill all reservation fields', 'danger')
+            return redirect(url_for('edit_reservation', reservation_id=reservation_id))
+        
+        # Check if the slot is already booked by someone else
+        existing = db.execute('''
+        SELECT * FROM reservations 
+        WHERE laboratory = ? AND reservation_date = ? AND time_slot = ? AND id != ?
+        ''', (laboratory, date, time_slot, reservation_id)).fetchone()
+        
+        if existing:
+            flash('This time slot is already booked. Please select another.', 'danger')
+            return redirect(url_for('edit_reservation', reservation_id=reservation_id))
+        
+        # Update reservation
+        db.execute('''
+        UPDATE reservations 
+        SET laboratory = ?, purpose = ?, reservation_date = ?, time_slot = ?
+        WHERE id = ? AND user_id = ?
+        ''', (laboratory, purpose, date, time_slot, reservation_id, session['user_id']))
+        db.commit()
+        
+        flash('Reservation updated successfully', 'success')
+        return redirect(url_for('reservation'))
+    
+    return render_template('edit_reservation.html', 
+                          user=user,
+                          reservation=reservation,
+                          laboratories=laboratories,
+                          purposes=purposes,
+                          time_slots=time_slots)
+
+@app.route('/delete_reservation/<int:reservation_id>', methods=['POST'])
+@login_required
+def delete_reservation(reservation_id):
+    db = get_db()
+    
+    # Check if the reservation belongs to the user
+    reservation = db.execute('SELECT * FROM reservations WHERE id = ? AND user_id = ?', 
+                           (reservation_id, session['user_id'])).fetchone()
+    
+    if not reservation:
+        flash('Reservation not found or you do not have permission to delete it', 'danger')
+        return redirect(url_for('reservation'))
+    
+    # Delete the reservation
+    db.execute('DELETE FROM reservations WHERE id = ?', (reservation_id,))
+    db.commit()
+    
+    flash('Reservation deleted successfully', 'success')
     return redirect(url_for('reservation'))
 
 @app.route('/rules')

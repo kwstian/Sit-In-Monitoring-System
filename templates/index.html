@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block main_container %}
+<div class="main-landing">
+    <div class="header-banner">
+        <div class="banner-content">
+            <h1>Sit-In Classroom Monitoring</h1>
+            <p>Ensuring Safe and Effective Learning</p>
+        </div>
+    </div>
+
+    <div class="landing-content">
+        <div class="welcome-message">
+            <h2>Welcome to the Laboratory Monitoring System</h2>
+            <p>We are dedicated to providing a safe and effective learning environment for all our students. Our state-of-the-art facilities and experienced faculty ensure that you receive the best education possible.</p>
+        </div>
+
+        <div class="features-container">
+            <div class="feature-card">
+                <i class="fas fa-calendar-check"></i>
+                <h3>Easy Reservations</h3>
+                <p>Book laboratory time slots quickly and easily through our online reservation system.</p>
+            </div>
+            <div class="feature-card">
+                <i class="fas fa-clipboard-list"></i>
+                <h3>Clear Guidelines</h3>
+                <p>Access laboratory rules and guidelines to ensure a productive learning experience.</p>
+            </div>
+            <div class="feature-card">
+                <i class="fas fa-comments"></i>
+                <h3>Feedback System</h3>
+                <p>Submit your feedback to help us improve our laboratory facilities and services.</p>
+            </div>
+        </div>
+
+        <div class="cta-container">
+            <a href="{{ url_for('login') }}" class="cta-button">Login</a>
+            <a href="{{ url_for('register') }}" class="cta-button cta-secondary">Register</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
